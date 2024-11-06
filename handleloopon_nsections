@@ -1,0 +1,69 @@
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.List;
+
+public class WFSectionHandler {
+
+    public static void main(String[] args) {
+        // Setup the WebDriver (Ensure ChromeDriver is in your path or specify location)
+        WebDriver driver = new ChromeDriver();
+        WebDriverWait wait = new WebDriverWait(driver, 10); // Waiting for elements
+
+        try {
+            // Step 1: Navigate to the application page
+            driver.get("https://your-application-url.com");
+
+            // Step 2: Get the WF section and ref-no from the backend query (these would come from your DB or service call)
+            String wfSection = getWFSectionFromDatabase();  // Retrieved from DB query output
+            String refNo = getRefNoFromDatabase();  // Retrieved from DB query output
+
+            // Step 3: Locate all WF sections in the application (assuming they are in a list or container)
+            // Example: sections are inside a container with the class 'wf-section-container'
+            List<WebElement> wfSections = driver.findElements(By.cssSelector(".wf-section-container .section"));
+
+            // Step 4: Loop through the WF sections and find the one that matches the `wfSection` and `refNo`
+            for (WebElement section : wfSections) {
+                // Assuming that each section has a `data-ref-no` attribute and `data-wf-section`
+                String sectionRefNo = section.getAttribute("data-ref-no");
+                String sectionId = section.getAttribute("data-wf-section"); // or use text if it's embedded
+
+                // Compare the `wfSection` and `refNo` from DB with the values on the web page
+                if (wfSection.equals(sectionId) && refNo.equals(sectionRefNo)) {
+                    // Step 5: Click on the matched section
+                    section.click();
+                    System.out.println("Successfully clicked the WF section with ref-no: " + refNo);
+                    break;  // Exit loop once the section is clicked
+                }
+            }
+
+            // Step 6: Optionally, wait for a confirmation element to appear after clicking
+            WebElement confirmationElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("confirmationId")));
+            if (confirmationElement.isDisplayed()) {
+                System.out.println("Confirmation message displayed, action completed.");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Step 7: Close the browser after completing the action
+            driver.quit();
+        }
+    }
+
+    // Example method for getting the WF section from the database
+    public static String getWFSectionFromDatabase() {
+        // Simulate getting `wfSection` value from your backend (transaction control table)
+        return "wfSectionId123";  // Placeholder value from DB query output
+    }
+
+    // Example method for getting the ref-no from the database
+    public static String getRefNoFromDatabase() {
+        // Simulate getting `refNo` value from your backend (transaction control table)
+        return "refNo456";  // Placeholder value from DB query output
+    }
+}
