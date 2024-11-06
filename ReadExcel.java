@@ -107,4 +107,47 @@ public class ReadExcel {
 
 	}
 
+public static int getRowCount() {
+		int rowCount = 0;
+		try {
+
+			rowCount = sheet.getPhysicalNumberOfRows();
+		} catch (Exception e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
+		return rowCount;
+
+	}
+
+
+public static String getCellDataString(int rownum, int colnum) {
+		String cellData = null;
+		try {
+//cellData = sheet.getRow(rownum).getCell(colnum).getStringCellValue();
+			XSSFCell cell =sheet.getRow(rownum).getCell(colnum);
+			DataFormatter df = new DataFormatter();
+			cellData = df.formatCellValue(cell);
+		} catch (Exception e) {
+			e.getMessage();
+			e.getCause();
+			e.printStackTrace();
+		}
+		return cellData;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
 }
