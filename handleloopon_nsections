@@ -18,26 +18,24 @@ public class WFSectionHandler {
             // Step 1: Navigate to the application page
             driver.get("https://your-application-url.com");
 
-            // Step 2: Get the WF section and ref-no from the backend query (these would come from your DB or service call)
-            String wfSection = getWFSectionFromDatabase();  // Retrieved from DB query output
-            String refNo = getRefNoFromDatabase();  // Retrieved from DB query output
+            // Step 2: Get the WF section from the backend query (this value is retrieved dynamically)
+            String wfSection = getWFSectionFromDatabase();  // Example: "WFB"
 
-            // Step 3: Locate all WF sections in the application (assuming they are in a list or container)
+            // Step 3: Locate all WF sections in the application (assuming they are in a container)
             // Example: sections are inside a container with the class 'wf-section-container'
             List<WebElement> wfSections = driver.findElements(By.cssSelector(".wf-section-container .section"));
 
-            // Step 4: Loop through the WF sections and find the one that matches the `wfSection` and `refNo`
+            // Step 4: Loop through the WF sections and find the one that matches the `wfSection` retrieved from the backend
             for (WebElement section : wfSections) {
-                // Assuming that each section has a `data-ref-no` attribute and `data-wf-section`
-                String sectionRefNo = section.getAttribute("data-ref-no");
-                String sectionId = section.getAttribute("data-wf-section"); // or use text if it's embedded
+                // Assuming that the section ID or name is visible as text or a specific attribute (e.g., data-wf-section)
+                String sectionId = section.getText().trim(); // or section.getAttribute("data-wf-section") if it's an attribute
 
-                // Compare the `wfSection` and `refNo` from DB with the values on the web page
-                if (wfSection.equals(sectionId) && refNo.equals(sectionRefNo)) {
+                // Check if the section ID matches the wfSection from the backend
+                if (sectionId.equals(wfSection)) {
                     // Step 5: Click on the matched section
                     section.click();
-                    System.out.println("Successfully clicked the WF section with ref-no: " + refNo);
-                    break;  // Exit loop once the section is clicked
+                    System.out.println("Successfully clicked the WF section: " + wfSection);
+                    break;  // Exit loop once the correct section is clicked
                 }
             }
 
@@ -58,12 +56,6 @@ public class WFSectionHandler {
     // Example method for getting the WF section from the database
     public static String getWFSectionFromDatabase() {
         // Simulate getting `wfSection` value from your backend (transaction control table)
-        return "wfSectionId123";  // Placeholder value from DB query output
-    }
-
-    // Example method for getting the ref-no from the database
-    public static String getRefNoFromDatabase() {
-        // Simulate getting `refNo` value from your backend (transaction control table)
-        return "refNo456";  // Placeholder value from DB query output
+        return "WFB";  // Placeholder value from DB query output
     }
 }
