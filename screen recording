@@ -1,0 +1,54 @@
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.io.IOException;
+
+public class SeleniumWithScreenRecording {
+    private WebDriver driver;
+    private Process screenRecordingProcess;
+
+    // Start screen recording
+    @BeforeClass
+    public void startScreenRecording() throws IOException {
+        String ffmpegPath = "C:\\path\\to\\ffmpeg.exe"; // Update with your FFmpeg path
+        String videoFilePath = "C:\\path\\to\\output\\recording.mp4"; // Output video file location
+
+        // Command to start screen recording using FFmpeg
+        String command = ffmpegPath + " -f gdigrab -framerate 30 -i desktop " + videoFilePath;
+        screenRecordingProcess = new ProcessBuilder(command.split(" ")).start();
+        
+        // Optionally, add a small delay to ensure recording starts before test execution
+        try {
+            Thread.sleep(1000); // Sleep for 1 second to ensure recording starts
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Example test using Selenium WebDriver
+    @Test
+    public void testSeleniumWithRecording() {
+        // Set the path to your WebDriver executable
+        System.setProperty("webdriver.chrome.driver", "C:\\path\\to\\chromedriver.exe");
+        driver = new ChromeDriver();
+        
+        // Open a website
+        driver.get("https://www.example.com");
+        
+        // Perform your Selenium actions here
+        
+        driver.quit();
+    }
+
+    // Stop screen recording after the test
+    @AfterClass
+    public void stopScreenRecording() throws IOException {
+        if (screenRecordingProcess != null) {
+            // Stop the recording by destroying the process
+            screenRecordingProcess.destroy();
+        }
+    }
+}
